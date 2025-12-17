@@ -224,23 +224,7 @@ public class OrderServiceImpl implements OrderService {
             );
         }
 
-        switch (current) {
-            case CREATED -> {
-                if (next != OrderStatus.CONFIRMED && next != OrderStatus.CANCELLED) {
-                    throw new InvalidOrderStateException("Invalid transition from CREATED");
-                }
-            }
-            case CONFIRMED -> {
-                if (next != OrderStatus.SHIPPED) {
-                    throw new InvalidOrderStateException("Invalid transition from CONFIRMED");
-                }
-            }
-            case SHIPPED -> {
-                if (next != OrderStatus.DELIVERED && next != OrderStatus.RETURNED) {
-                    throw new InvalidOrderStateException("Invalid transition from SHIPPED");
-                }
-            }
-        }
+
     }
 
 
