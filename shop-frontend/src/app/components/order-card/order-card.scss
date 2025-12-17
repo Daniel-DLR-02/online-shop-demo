@@ -1,0 +1,80 @@
+.order-card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  color: black;
+}
+
+.order-header {
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.order-body {
+  padding: 12px;
+}
+
+.order-items {
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+.order-details {
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.summary {
+  cursor: pointer;
+}
+
+.edit-btn {
+  background: none;
+  //border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-left: 20px;
+}
+
+.order-header {
+  padding: 10px 14px;
+  border-radius: 8px 8px 0 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.status-warning {
+  background-color: #fff8e1;
+  color: #8d6e00;
+}
+
+.status-success {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-error {
+  background-color: #fdecea;
+  color: #c62828;
+}
+
+.items-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 8px 0;
+}
+
+.more-btn {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #555;
+  padding: 0;
+}
+
+.more-btn:hover {
+  color: #000;
+}

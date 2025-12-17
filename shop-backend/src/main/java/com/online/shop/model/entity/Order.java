@@ -17,6 +17,7 @@ public class Order {
     private String customerContact;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private OrderStatus status;
 
     private BigDecimal totalAmount;
@@ -99,5 +100,11 @@ public class Order {
 
     public void setItems(List<OrderItem> items) {
         this.items = items;
+    }
+
+    public boolean isFinalState() {
+        return this.status == OrderStatus.DELIVERED
+                || this.status == OrderStatus.CANCELLED
+                || this.status == OrderStatus.RETURNED;
     }
 }

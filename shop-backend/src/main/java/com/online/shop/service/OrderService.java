@@ -1,6 +1,7 @@
 package com.online.shop.service;
 
 import com.online.shop.dto.request.CreateOrderRequest;
+import com.online.shop.dto.request.UpdateOrderRequest;
 import com.online.shop.dto.request.UpdateOrderStatusRequest;
 import com.online.shop.dto.response.OrderResponse;
 import org.springframework.data.domain.Page;
@@ -18,4 +19,7 @@ public interface OrderService {
     OrderResponse getOrderById(UUID orderId);
 
     OrderResponse updateOrderStatus(UUID orderId, UpdateOrderStatusRequest request);
+
+    OrderResponse updateOrder(UUID id, UpdateOrderRequest request);
+
 }

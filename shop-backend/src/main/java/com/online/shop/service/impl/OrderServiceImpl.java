@@ -2,10 +2,13 @@ package com.online.shop.service.impl;
 
 import com.online.shop.dto.request.CreateOrderRequest;
 import com.online.shop.dto.request.OrderItemRequest;
+import com.online.shop.dto.request.UpdateOrderRequest;
 import com.online.shop.dto.request.UpdateOrderStatusRequest;
 import com.online.shop.dto.response.OrderItemResponse;
 import com.online.shop.dto.response.OrderResponse;
+import com.online.shop.exception.BusinessException;
 import com.online.shop.exception.InvalidOrderStateException;
+import com.online.shop.exception.NotFoundException;
 import com.online.shop.exception.OrderNotFoundException;
 import com.online.shop.model.entity.Order;
 import com.online.shop.model.entity.OrderItem;
@@ -14,6 +17,8 @@ import com.online.shop.model.enums.OrderStatus;
 import com.online.shop.repository.OrderRepository;
 import com.online.shop.repository.ProductRepository;
 import com.online.shop.service.OrderService;
+import jakarta.transaction.Transactional;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
@@ -99,6 +104,32 @@ public class OrderServiceImpl implements OrderService {
         return mapToOrderResponse(updatedOrder);
     }
 
+    @Override
+    @Transactional
+    public OrderResponse updateOrder(UUID id, UpdateOrderRequest request) {
+
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Order not found"));
+
+        if (order.isFinalState()) {
+            throw new BusinessException("Order is in a final state and cannot be modified");
+        }
+
+        order.setCustomerName(request.getCustomerName());
+        order.setCustomerContact(request.getCustomerContact());
+
+        if (request.getStatus() != order.getStatus()) {
+            validateStatusTransition(order.getStatus(), request.getStatus());
+            order.setStatus(request.getStatus());
+        }
+
+        order.setUpdatedAt(LocalDateTime.now());
+
+        Order saved = orderRepository.save(order);
+
+        return mapToResponse(saved);
+    }
+
     // -----------------------
     // Helpers
     // -----------------------
@@ -149,6 +180,36 @@ public class OrderServiceImpl implements OrderService {
         return response;
     }
 
+    private OrderResponse mapToResponse(Order order) {
+
+        List<OrderItemResponse> items = order.getItems().stream()
+                .map(item -> {
+                    OrderItemResponse response = new OrderItemResponse();
+                    response.setProductSku(item.getProductSku());
+                    response.setProductName(item.getProductName());
+                    response.setUnitPrice(item.getUnitPrice());
+                    response.setQuantity(item.getQuantity());
+                    response.setTotalPrice(item.getTotalPrice());
+                    return response;
+                })
+                .toList();
+
+        OrderResponse response = new OrderResponse();
+        response.setId(order.getId());
+        response.setCustomerName(order.getCustomerName());
+        response.setCustomerContact(order.getCustomerContact());
+        response.setStatus(order.getStatus());
+        response.setTotalAmount(order.getTotalAmount());
+        response.setCreatedAt(order.getCreatedAt());
+        response.setItems(items);
+
+        return response;
+    }
+
+
+
+
+
     // -----------------------
     // Business rules
     // -----------------------
@@ -181,4 +242,6 @@ public class OrderServiceImpl implements OrderService {
             }
         }
     }
+
+
 }

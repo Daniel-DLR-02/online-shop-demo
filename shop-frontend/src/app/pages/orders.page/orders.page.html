@@ -1,0 +1,47 @@
+<section class="orders-page">
+  <h1 class="page-title">Pedidos</h1>
+
+  @if (loading()) {
+  <p>Cargando...</p>
+  } @else if (orders().length > 0) {
+  @for (order of orders(); track order.id) {
+  <app-order-card [order]="order" (edit)="openEditPanel(order)">
+  </app-order-card>
+  }
+  } @else {
+  <p>No hay pedidos</p>
+  }
+</section>
+
+@if (panelOpen()) {
+<div class="overlay" (click)="closeEditPanel()"></div>
+}
+
+<app-order-edit-panel [class.open]="panelOpen()" [order]="selectedOrder()!" (save)="saveOrderChanges($event)"
+  (cancel)="closeEditPanel()">
+</app-order-edit-panel>
+
+<button class="fab" (click)="openCreateModal()">
+  +
+</button>
+
+@if (createModalOpen()) {
+<app-create-order-modal (cancel)="closeCreateModal()" (created)="onOrderCreated()">
+</app-create-order-modal>
+}
+
+<div class="pagination" *ngIf="totalPages() > 1">
+
+  <button class="page-btn" (click)="previousPage()" [disabled]="page() === 0">
+    ‹ Prev
+  </button>
+
+  <span class="page-info">
+    Page <strong>{{ page() + 1 }}</strong> of {{ totalPages() }}
+  </span>
+
+  <button class="page-btn" (click)="nextPage()" [disabled]="page() >= totalPages() - 1">
+    Next ›
+  </button>
+
+</div>

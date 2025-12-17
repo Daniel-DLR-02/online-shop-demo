@@ -1,0 +1,50 @@
+<div class="order-card">
+
+  <!-- Header -->
+  <div class="order-header" [ngClass]="statusClass">
+    <strong>{{ getStatusLabel(order.status) }} </strong>
+    <span> • Pedido: {{ order.id.slice(0, 8) }}</span>
+    <span> • Precio total: {{ order.totalAmount }} €</span>
+    @if (isReadOnly) {
+    <button mat-icon-button class="edit-btn" disabled>
+      <mat-icon>edit</mat-icon>
+    </button>
+    }
+    @else {
+    <button mat-icon-button class="edit-btn" (click)="onEditClick()">
+      <mat-icon>edit</mat-icon>
+    </button>
+    }
+
+  </div>
+  <div class="order-body">
+    <div><strong>Cliente:</strong> {{ order.customerName }}</div>
+    <div><strong>Contacto:</strong> {{ order.customerContact }}</div>
+    <div><strong>Creado:</strong> {{ order.createdAt | date:'medium' }}</div>
+    <hr />
+
+    <!-- Productos -->
+    <ul class="items-list">
+      @for (item of visibleItems; track item.productSku) {
+      <li>
+        • {{ item.productName }} x {{ item.quantity }}
+      </li>
+      }
+
+      @if (hasMoreItems) {
+      <li>
+        <button class="more-btn" (click)="openItemsModal()">
+          …
+        </button>
+        @if (itemsModalOpen) {
+        <app-order-items-modal [items]="order.items" (close)="closeItemsModal()">
+        </app-order-items-modal>
+        }
+      </li>
+      }
+    </ul>
+
+  </div>
+
+
+</div>

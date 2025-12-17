@@ -1,0 +1,59 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  border-radius: 12px;
+  width: 420px;
+  max-height: 70vh;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.items-list {
+  margin-top: 12px;
+  overflow-y: auto;
+  max-height: 45vh;
+}
+
+.item {
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.actions {
+  margin-top: 16px;
+  text-align: right;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
+.btn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+}
+
+.btn.secondary {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.btn.secondary:hover {
+  background: #e4e4e4;
+}

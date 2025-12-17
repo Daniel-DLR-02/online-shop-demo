@@ -1,10 +1,12 @@
 package com.online.shop.controller;
 
 import com.online.shop.dto.request.CreateOrderRequest;
+import com.online.shop.dto.request.UpdateOrderRequest;
 import com.online.shop.dto.request.UpdateOrderStatusRequest;
 import com.online.shop.dto.response.OrderResponse;
 import com.online.shop.service.OrderService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,4 +48,14 @@ public class OrderController {
     ) {
         return orderService.updateOrderStatus(orderId, request);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<OrderResponse> updateOrder(
+            @PathVariable UUID id,
+            @Valid @RequestBody UpdateOrderRequest request
+    ) {
+        OrderResponse updated = orderService.updateOrder(id, request);
+        return ResponseEntity.ok(updated);
+    }
+
 }

@@ -1,0 +1,74 @@
+<div class="backdrop">
+  <div class="modal">
+
+    <!-- Header -->
+    <div class="modal-header">
+      <h2>Create order</h2>
+    </div>
+
+    <!-- Body (scrollable) -->
+    <div class="modal-body">
+      <form [formGroup]="form" class="form-content">
+
+        <!-- Customer fields -->
+        <div class="field-row">
+          <input placeholder="Nombre del cliente" formControlName="customerName" />
+
+          <input placeholder="Email de contacto" formControlName="customerContact" [class.invalid]="
+    form.get('customerContact')?.invalid &&
+    form.get('customerContact')?.touched
+  " />
+          <div class="error" *ngIf="
+    form.get('customerContact')?.hasError('email') &&
+    form.get('customerContact')?.touched
+  ">
+            Please enter a valid email address
+          </div>
+        </div>
+
+        <!-- Products -->
+        <h3>Productos</h3>
+
+        <div class="products-section" formArrayName="items">
+          @for (item of itemGroups; track item) {
+          <div class="item-row" [formGroup]="item">
+
+            <!-- Product select -->
+            <select formControlName="productId">
+              <option value="">Seleccionar producto</option>
+              @for (product of products$ | async; track product.id) {
+              <option [value]="product.id" [disabled]="isProductSelected(product.id, itemGroups.indexOf(item))">
+                {{ product.name }} – {{ product.price }} €
+              </option>
+              }
+            </select>
+
+            <!-- Quantity -->
+            <input type="number" min="1" formControlName="quantity" />
+
+            <!-- Remove -->
+            <button type="button" class="icon" (click)="removeItem(itemGroups.indexOf(item))"
+              [disabled]="items.length === 1">
+              ✕
+            </button>
+
+          </div>
+          }
+
+          <button type="button" (click)="addItem()">+ Añadir producto</button>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer">
+      <button type="button" (click)="onCancel()">Cancelar</button>
+
+      <button type="button" class="primary" (click)="onSave()" [disabled]="form.invalid">
+        Crear pedido
+      </button>
+    </div>
+
+  </div>
+</div>

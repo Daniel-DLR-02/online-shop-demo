@@ -1,0 +1,53 @@
+<div class="panel-content">
+
+  <div class="first-row">
+    <h2>
+      Modificar pedido
+    </h2>
+
+    <button mat-icon-button class="go-back-btn" (click)="onCancel()">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+  <form [formGroup]="form">
+    <div class="section">
+      <label>
+        <span class="label">Nombre del cliente</span>
+        <input type="text" formControlName="customerName" />
+      </label>
+
+      <label>
+        <span class="label">Email de contacto del cliente</span>
+        <input type="text" formControlName="customerContact" />
+      </label>
+    </div>
+
+    <hr />
+
+    <div class="section">
+      <label>
+        <span class="label">Status</span>
+        <select formControlName="status">
+          <option *ngFor="let s of statuses" [value]="s">
+            {{ s }}
+          </option>
+        </select>
+      </label>
+    </div>
+
+    @if (isReadOnly) {
+    <div class="readonly-warning">
+      Este pedido ha finalizado por lo que no puede ser modificado.
+    </div>
+    }
+    @else {
+    <div class="actions">
+      <button class="primary" [disabled]="!hasChanges || isReadOnly" (click)="onSave()">Guardar</button>
+    </div>
+    }
+
+  </form>
+
+
+
+</div>

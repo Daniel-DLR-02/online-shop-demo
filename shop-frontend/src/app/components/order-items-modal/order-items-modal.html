@@ -1,0 +1,21 @@
+<div class="backdrop" (click)="close.emit()">
+  <div class="modal" (click)="$event.stopPropagation()">
+
+    <h3>Products</h3>
+
+    <div class="items-list">
+      @for (item of items; track item) {
+      <div class="item">
+        {{ item.productName }} – {{ item.quantity }} x {{ item.unitPrice }} €
+      </div>
+      }
+    </div>
+
+
+    <div class="modal-footer">
+      <button class="btn secondary" (click)="close.emit()">Close</button>
+    </div>
+
+
+  </div>
+</div>
