@@ -11,7 +11,6 @@ import java.util.UUID;
 public class Order {
 
     @Id
-    @GeneratedValue
     private UUID id;
 
     private String customerName;
@@ -31,6 +30,12 @@ public class Order {
             orphanRemoval = true
     )
     private List<OrderItem> items;
+
+
+    public Order() {
+        this.id = UUID.randomUUID();
+    }
+
 
     public UUID getId() {
         return id;

@@ -3,19 +3,24 @@ package com.online.shop.model.entity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Entity
 @Table(name = "order_items")
 public class OrderItem {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
 
+    // Referencia lógica al producto
+    @Column(name = "product_id", nullable = false)
+    private UUID productId;
+    // Snapshot del producto en el momento de la compra
     private String productSku;
     private String productName;
-
     private BigDecimal unitPrice;
+
+    // Datos propios del pedido
     private Integer quantity;
     private BigDecimal totalPrice;
 
@@ -23,12 +28,20 @@ public class OrderItem {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    public Long getId() {
+    public OrderItem() {
+        this.id = UUID.randomUUID();
+    }
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+
+    public UUID getProductId() {
+        return productId;
+    }
+
+    public void setProductId(UUID productId) {
+        this.productId = productId;
     }
 
     public String getProductSku() {

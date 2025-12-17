@@ -1,0 +1,152 @@
+{
+  "info": {
+    "name": "Order Management API",
+    "description": "Postman collection to test the full lifecycle of orders using UUID identifiers.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "productId", "value": "" },
+    { "key": "orderId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Get Products",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/products",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "products"]
+        }
+      }
+    },
+    {
+      "name": "Create Order",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"customerName\": \"John Doe\",\n  \"customerContact\": \"john.doe@email.com\",\n  \"items\": [\n    {\n      \"productId\": \"{{productId}}\",\n      \"quantity\": 2\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/orders",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "orders"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.environment.set('orderId', json.id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get All Orders (Paginated)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/orders?page=0&size=10",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "orders"],
+          "query": [
+            { "key": "page", "value": "0" },
+            { "key": "size", "value": "10" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Order By Id",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/orders/{{orderId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "orders", "{{orderId}}"]
+        }
+      }
+    },
+    {
+      "name": "Confirm Order",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \"status\": \"CONFIRMED\" }"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/orders/{{orderId}}/status",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "orders", "{{orderId}}", "status"]
+        }
+      }
+    },
+    {
+      "name": "Ship Order",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \"status\": \"SHIPPED\" }"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/orders/{{orderId}}/status",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "orders", "{{orderId}}", "status"]
+        }
+      }
+    },
+    {
+      "name": "Deliver Order",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \"status\": \"DELIVERED\" }"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/orders/{{orderId}}/status",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "orders", "{{orderId}}", "status"]
+        }
+      }
+    },
+    {
+      "name": "Invalid Transition (Cancel Delivered Order)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \"status\": \"CANCELLED\" }"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/orders/{{orderId}}/status",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "orders", "{{orderId}}", "status"]
+        }
+      }
+    }
+  ]
+}

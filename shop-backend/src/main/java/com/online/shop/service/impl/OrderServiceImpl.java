@@ -9,8 +9,10 @@ import com.online.shop.exception.InvalidOrderStateException;
 import com.online.shop.exception.OrderNotFoundException;
 import com.online.shop.model.entity.Order;
 import com.online.shop.model.entity.OrderItem;
+import com.online.shop.model.entity.Product;
 import com.online.shop.model.enums.OrderStatus;
 import com.online.shop.repository.OrderRepository;
+import com.online.shop.repository.ProductRepository;
 import com.online.shop.service.OrderService;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,7 @@ import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,11 +28,15 @@ import java.util.UUID;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
+    private final ProductRepository productRepository;
 
-    public OrderServiceImpl(OrderRepository orderRepository) {
+    public OrderServiceImpl(
+            OrderRepository orderRepository,
+            ProductRepository productRepository
+    ) {
         this.orderRepository = orderRepository;
+        this.productRepository = productRepository;
     }
-
     // 1️⃣ CREATE ORDER
     @Override
     public OrderResponse createOrder(CreateOrderRequest request) {
@@ -41,9 +48,11 @@ public class OrderServiceImpl implements OrderService {
         order.setCreatedAt(LocalDateTime.now());
         order.setUpdatedAt(LocalDateTime.now());
 
-        List<OrderItem> items = request.getItems().stream()
-                .map(itemRequest -> mapToOrderItem(itemRequest, order))
-                .toList();
+        List<OrderItem> items = new ArrayList<>();
+
+        for (OrderItemRequest itemRequest : request.getItems()) {
+            items.add(mapToOrderItem(itemRequest, order));
+        }
 
         BigDecimal totalAmount = items.stream()
                 .map(OrderItem::getTotalPrice)
@@ -95,15 +104,21 @@ public class OrderServiceImpl implements OrderService {
     // -----------------------
 
     private OrderItem mapToOrderItem(OrderItemRequest request, Order order) {
+
+        Product product = productRepository.findById(request.getProductId())
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
         OrderItem item = new OrderItem();
-        item.setProductSku(request.getProductSku());
-        item.setProductName(request.getProductName());
-        item.setUnitPrice(request.getUnitPrice());
+        item.setProductId(product.getId());
+        item.setProductSku(product.getSku());
+        item.setProductName(product.getName());
+        item.setUnitPrice(product.getPrice());
         item.setQuantity(request.getQuantity());
         item.setTotalPrice(
-                request.getUnitPrice().multiply(BigDecimal.valueOf(request.getQuantity()))
+                product.getPrice().multiply(BigDecimal.valueOf(request.getQuantity()))
         );
         item.setOrder(order);
+
         return item;
     }
 
