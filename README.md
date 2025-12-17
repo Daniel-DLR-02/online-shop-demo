@@ -123,6 +123,4 @@ docker compose up
 
 ---
 
-## 👨‍💻 Autor
-
 Proyecto desarrollado como prueba técnica full-stack.
